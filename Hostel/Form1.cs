@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -26,22 +27,29 @@ namespace Hostel
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            // TODO: данная строка кода позволяет загрузить данные в таблицу "hostelDataSet.Benefits". При необходимости она может быть перемещена или удалена.
-            this.benefitsTableAdapter.Fill(this.hostelDataSet.Benefits);
-            // TODO: данная строка кода позволяет загрузить данные в таблицу "hostelDataSet.Students". При необходимости она может быть перемещена или удалена.
-            this.studentsTableAdapter.Fill(this.hostelDataSet.Students);
-            // TODO: данная строка кода позволяет загрузить данные в таблицу "hostelDataSet.Rooms". При необходимости она может быть перемещена или удалена.
-            this.roomsTableAdapter.Fill(this.hostelDataSet.Rooms);
+            loadDB();
 
             dataGridView1.AutoGenerateColumns = true;
 
         }
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void updateDB()
         {
             roomsTableAdapter.Update(hostelDataSet);
             benefitsTableAdapter.Update(hostelDataSet);
             studentsTableAdapter.Update(hostelDataSet);
+        }
+
+        private void loadDB()
+        {
+            benefitsTableAdapter.Fill(hostelDataSet.Benefits);
+            studentsTableAdapter.Fill(hostelDataSet.Students);
+            roomsTableAdapter.Fill(hostelDataSet.Rooms);
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            updateDB();
         }
 
         private void roomsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -70,16 +78,16 @@ namespace Hostel
 
         private void resettlementToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            updateDB();
             var rs = new RSForm();
             rs.ShowDialog();
-            benefitsTableAdapter.Fill(hostelDataSet.Benefits);
-            studentsTableAdapter.Fill(hostelDataSet.Students);
-            roomsTableAdapter.Fill(hostelDataSet.Rooms);
+            loadDB();
 
         }
 
         private void queryEditToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            updateDB();
             var qe = new QueryEdit();
             qe.Show();
         }
@@ -87,18 +95,20 @@ namespace Hostel
         private void addToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!can_edit) return;
+            updateDB();
             var edt = new EditForm();
             edt.ShowDialog();
             hostelDataSet.AcceptChanges();
             studentsTableAdapter.Fill(hostelDataSet.Students);
-            
+
         }
 
         private void updateToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(!can_edit) return;
+            if (!can_edit) return;
+            updateDB();
             var st = new HostelDataSet.StudentsDataTable();
-            studentsTableAdapter.FillBy(st, 
+            studentsTableAdapter.FillBy(st,
                 Convert.ToInt32(dataGridView1.SelectedRows[0].Cells[0].Value));
             var rows = st.Rows[0].ItemArray;
             var edt = new EditForm(Convert.ToInt32(rows[0]),
@@ -126,6 +136,7 @@ namespace Hostel
 
         private void reportToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            updateDB();
             (new ReportViewer()).ShowDialog();
         }
 

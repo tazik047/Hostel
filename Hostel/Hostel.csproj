@@ -153,11 +153,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Hostel.mdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Hostel.mdf" />
     <Content Include="Hostel_log.ldf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <DependentUpon>Hostel.mdf</DependentUpon>
     </Content>
   </ItemGroup>
